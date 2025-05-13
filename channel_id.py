@@ -95,17 +95,26 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 COOKIES_PATH = os.getenv("COOKIES_PATH")
 
-CHANNEL_USERNAME = "@mashina_bozor_moshinalari"  # kanal username
+CHANNEL_USERNAME = "@mashina_bozor_moshinalari"  # Kanal username
 
 app = Client("universal_video_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
 
-# Kanalga obuna tekshirish
+# Kanalga obuna tekshirish funksiyasi
+def extract_status(member):
+    try:
+        return member.status
+    except:
+        return None
+
+
 async def is_subscribed(user_id):
     try:
         member = await app.get_chat_member(CHANNEL_USERNAME, user_id)
-        return member.status in ("member", "administrator", "creator")
-    except:
+        status = extract_status(member)
+        return status in ("member", "administrator", "creator")
+    except Exception as e:
+        print(f"Obuna tekshirishda xatolik: {e}")
         return False
 
 
@@ -136,7 +145,7 @@ async def confirm_subscription(client, callback_query: CallbackQuery):
         await callback_query.answer("❗ Siz hali ham kanalga obuna emassiz.", show_alert=True)
 
 
-# Instagram video yuklash
+# Video yuklab olish funksiyasi
 def download_video_bytes(url):
     ydl_opts = {
         'format': 'bestvideo+bestaudio/best',
@@ -171,15 +180,18 @@ def download_video_bytes(url):
             return None, None
 
 
-# Havolani qabul qilish
+# Havola qabul qilish
 @app.on_message(filters.text & filters.private)
 async def handle_message(client: Client, message: Message):
     user_id = message.from_user.id
     if not await is_subscribed(user_id):
+        buttons = InlineKeyboardMarkup([
+            [InlineKeyboardButton("📢 Kanalga obuna bo‘lish", url=f"https://t.me/{CHANNEL_USERNAME[1:]}")],
+            [InlineKeyboardButton("✅ Obuna bo‘ldim", callback_data="check_subs")]
+        ])
         return await message.reply(
-            f"❗ Botdan foydalanish uchun {CHANNEL_USERNAME} kanaliga obuna bo‘ling.\n"
-            f"🔗 https://t.me/{CHANNEL_USERNAME[1:]}",
-            disable_web_page_preview=True
+            "❗ Botdan foydalanish uchun kanalga obuna bo‘ling.",
+            reply_markup=buttons
         )
 
     url = message.text.strip()
