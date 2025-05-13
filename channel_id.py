@@ -156,7 +156,7 @@ async def handle_message(client: Client, message: Message):
         return await message.reply(
             f"❗ Botdan foydalanish uchun {CHANNEL_USERNAME} kanaliga obuna bo‘ling.\n\n"
             f"🔗 <a href='https://t.me/{CHANNEL_USERNAME[1:]}'>Kanalga o‘tish</a>",
-            parse_mode="html",
+            parse_mode="HTML",
             disable_web_page_preview=True
         )
 
