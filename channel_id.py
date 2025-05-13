@@ -83,7 +83,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 import os
 import asyncio
 from yt_dlp import YoutubeDL
@@ -95,39 +95,17 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 CHANNEL_USERNAME = "@mashina_bozor_moshinalari"  # Public kanal username
+CHANNEL_LINK = f"https://t.me/{CHANNEL_USERNAME[1:]}"
+CHANNEL_PHOTO_PATH = "logo.jpg"  # Kanal rasmi (lokal fayl nomi)
 
 app = Client("universal_video_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
-# Foydalanuvchi kanalga a’zo ekanligini tekshirish
-async def is_subscribed(user_id: int) -> bool:
-    try:
-        member = await app.get_chat_member(CHANNEL_USERNAME, user_id)
-        return member.status in ["member", "administrator", "creator"]
-    except Exception as e:
-        print("Obuna tekshirish xatosi:", e)
-        return False
 
 # /start komandasi
 @app.on_message(filters.command("start") & filters.private)
 async def start_handler(client, message: Message):
-    user_id = message.from_user.id
-    if await is_subscribed(user_id):
-        await message.reply("✅ Botga xush kelibsiz! Video havolasini yuboring.")
-    else:
-        buttons = InlineKeyboardMarkup([
-            [InlineKeyboardButton("📢 Kanalga obuna bo‘lish", url=f"https://t.me/{CHANNEL_USERNAME[1:]}")],
-            [InlineKeyboardButton("✅ Obuna bo‘ldim", callback_data="check_sub")]
-        ])
-        await message.reply("❌ Botdan foydalanish uchun kanalga obuna bo‘ling.", reply_markup=buttons)
+    await message.reply("👋 Salom! Video havolasini yuboring – biz uni yuklab beramiz.")
 
-# Callback tugmani qayta tekshirish
-@app.on_callback_query(filters.regex("check_sub"))
-async def check_subscription(client, callback_query: CallbackQuery):
-    user_id = callback_query.from_user.id
-    if await is_subscribed(user_id):
-        await callback_query.message.edit_text("✅ Obunangiz tasdiqlandi. Endi havola yuborishingiz mumkin.")
-    else:
-        await callback_query.answer("❌ Hali ham kanalga obuna emassiz!", show_alert=True)
 
 # YouTube video yuklab olish
 def download_video_bytes(url):
@@ -160,17 +138,10 @@ def download_video_bytes(url):
             print("Video yuklab olish xatosi:", e)
             return None, None
 
-# Video yuklash va yuborish
+
+# Video yuklash va reklama yuborish
 @app.on_message(filters.text & filters.private)
 async def download_handler(client: Client, message: Message):
-    user_id = message.from_user.id
-    if not await is_subscribed(user_id):
-        buttons = InlineKeyboardMarkup([
-            [InlineKeyboardButton("📢 Kanalga obuna bo‘lish", url=f"https://t.me/{CHANNEL_USERNAME[1:]}")],
-            [InlineKeyboardButton("✅ Obuna bo‘ldim", callback_data="check_sub")]
-        ])
-        return await message.reply("❗ Botdan foydalanish uchun avval kanalga obuna bo‘ling.", reply_markup=buttons)
-
     url = message.text.strip()
     if not url.startswith("http"):
         return await message.reply("❗ Iltimos, havola yuboring.")
@@ -183,9 +154,22 @@ async def download_handler(client: Client, message: Message):
         if video:
             await message.reply_video(video, caption=f"✅ Yuklandi: {title}")
             await wait_msg.delete()
+
+            # Reklama postini yuborish
+            caption = (
+                f"📢 <b>Bizning kanal:</b>\n"
+                f"📌 <b>Nom:</b> {CHANNEL_USERNAME}\n"
+                f"🔗 <b>Link:</b> {CHANNEL_LINK}"
+            )
+            try:
+                await message.reply_photo(photo=CHANNEL_PHOTO_PATH, caption=caption)
+            except Exception as e:
+                await message.reply(f"🔗 {CHANNEL_USERNAME}")
+
         else:
             await wait_msg.edit("❌ Video yuklab bo‘lmadi. Havola noto‘g‘ri yoki format qo‘llab-quvvatlanmaydi.")
     except Exception as e:
         await wait_msg.edit(f"❌ Xatolik: {e}")
 
 app.run()
+
