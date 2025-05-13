@@ -111,8 +111,11 @@ def extract_status(member):
 async def is_subscribed(user_id):
     try:
         member = await app.get_chat_member(CHANNEL_USERNAME, user_id)
+        # Kanal yaratuvchisi uchun alohida tekshiruv
+        if member.status == "creator":
+            return True
         status = extract_status(member)
-        return status in ("member", "administrator", "creator")
+        return status in ("member", "administrator")
     except Exception as e:
         print(f"Obuna tekshirishda xatolik: {e}")
         return False
@@ -125,7 +128,7 @@ async def start_command(client, message: Message):
     if await is_subscribed(user_id):
         await message.reply("✅ Botga xush kelibsiz! Havola yuboring.")
     else:
-        buttons = InlineKeyboardMarkup([
+        buttons = InlineKeyboardMarkup([ 
             [InlineKeyboardButton("📢 Kanalga obuna bo‘lish", url=f"https://t.me/{CHANNEL_USERNAME[1:]}")],
             [InlineKeyboardButton("✅ Obuna bo‘ldim", callback_data="check_subs")]
         ])
@@ -185,7 +188,7 @@ def download_video_bytes(url):
 async def handle_message(client: Client, message: Message):
     user_id = message.from_user.id
     if not await is_subscribed(user_id):
-        buttons = InlineKeyboardMarkup([
+        buttons = InlineKeyboardMarkup([ 
             [InlineKeyboardButton("📢 Kanalga obuna bo‘lish", url=f"https://t.me/{CHANNEL_USERNAME[1:]}")],
             [InlineKeyboardButton("✅ Obuna bo‘ldim", callback_data="check_subs")]
         ])
@@ -214,4 +217,5 @@ async def handle_message(client: Client, message: Message):
 
 
 app.run()
+
 
