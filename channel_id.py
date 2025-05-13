@@ -158,7 +158,7 @@ async def download_handler(client: Client, message: Message):
             # Reklama postini yuborish
             caption = (
                 f"📢 <b>Bizning kanal:</b>\n"
-                f"📌 <b>Nom:</b> {CHANNEL_USERNAME}\n"
+                f"📌 <b>Nomi:</b> {CHANNEL_USERNAME}\n"
                 f"🔗 <b>Link:</b> {CHANNEL_LINK}"
             )
             try:
