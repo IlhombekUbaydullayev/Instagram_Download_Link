@@ -155,8 +155,7 @@ async def handle_message(client: Client, message: Message):
     if not await is_subscribed(message.from_user.id):
         return await message.reply(
             f"❗ Botdan foydalanish uchun {CHANNEL_USERNAME} kanaliga obuna bo‘ling.\n\n"
-            f"🔗 <a href='https://t.me/{CHANNEL_USERNAME[1:]}'>Kanalga o‘tish</a>",
-            parse_mode="HTML",
+            f"🔗 Kanalga o‘tish: https://t.me/{CHANNEL_USERNAME[1:]}",
             disable_web_page_preview=True
         )
 
