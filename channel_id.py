@@ -252,7 +252,7 @@ def download_video_bytes(url):
 # ✅ /start komandasi
 @app.on_message(filters.command("start") & filters.private)
 async def start_handler(client, message: Message):
-    await message.reply("👋 Salom! YouTube yoki boshqa video havolasini yuboring – biz sizga uni yuklab beramiz.")
+    await message.reply("👋 Salom! Instagram video havolasini yuboring – biz sizga uni yuklab beramiz.")
 
 # ✅ Video so‘rovni qabul qilish
 @app.on_message(filters.text & filters.private)
@@ -299,15 +299,19 @@ async def handle_subscription_check(client, callback_query):
 
 # ✅ Video yuklab beruvchi funksiyani ajratamiz
 async def download_and_send(client: Client, message: Message, url: str):
+    wait_msg = await message.reply("📥 Yuklab olinmoqda...")
     try:
         loop = asyncio.get_event_loop()
         video, title = await loop.run_in_executor(None, download_video_bytes, url)
 
         if video:
+            await wait_msg.delete()
             await message.reply_video(video, caption=f"✅ Yuklandi: {title}")
         else:
+            await wait_msg.delete()
             await message.reply("❌ Video yuklab bo‘lmadi.")
     except Exception as e:
+        await wait_msg.delete()
         await message.reply(f"❌ Xatolik: {e}")
 
     # Reklama (ixtiyoriy)
