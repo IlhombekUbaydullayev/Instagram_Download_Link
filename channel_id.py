@@ -93,6 +93,7 @@ import requests
 API_ID = int(os.getenv("API_ID"))
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+COOKIES_PATH = os.getenv("COOKIES_PATH")
 
 CHANNEL_USERNAME = "@mashina_bozor_moshinalari"  # Public kanal username
 CHANNEL_LINK = f"https://t.me/{CHANNEL_USERNAME[1:]}"
@@ -117,6 +118,10 @@ def download_video_bytes(url):
         'retries': 3,
         'merge_output_format': 'mp4',
     }
+
+    if COOKIES_PATH and os.path.exists(COOKIES_PATH):
+        ydl_opts['cookiefile'] = COOKIES_PATH
+
 
     with YoutubeDL(ydl_opts) as ydl:
         try:
