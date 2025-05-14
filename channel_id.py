@@ -314,11 +314,5 @@ async def download_and_send(client: Client, message: Message, url: str):
         await wait_msg.delete()
         await message.reply(f"❌ Xatolik: {e}")
 
-    # Reklama (ixtiyoriy)
-    try:
-        await message.reply_photo(photo=CHANNEL_PHOTO_PATH, caption=f"📢 Bizning kanal: {CHANNEL_LINK}")
-    except:
-        pass
-
 app.run()
 
