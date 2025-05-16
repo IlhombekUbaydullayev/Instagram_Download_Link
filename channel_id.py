@@ -95,7 +95,7 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 COOKIES_PATH = os.getenv("COOKIES_PATH")
 
-CHANNEL_USERNAME = "@mashina_bozor_moshinalari"  # Public kanal username
+CHANNEL_USERNAME = "@MashinaBozor24uz"  # Public kanal username
 CHANNEL_LINK = f"https://t.me/{CHANNEL_USERNAME[1:]}"
 CHANNEL_PHOTO_PATH = "logo.jpg"  # Kanal rasmi (lokal fayl nomi)
 
