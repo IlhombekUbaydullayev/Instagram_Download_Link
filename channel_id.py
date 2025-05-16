@@ -160,11 +160,16 @@ async def download_handler(client: Client, message: Message):
             await message.reply_video(video, caption=f"✅ Yuklandi: {title}")
             await wait_msg.delete()
 
-            # Reklama postini yuborish
-            caption = (
-                f"📢 <b>Bizning kanal:</b>\n"
-                f"📌 <b>Nomi:</b> {CHANNEL_USERNAME}\n"
-                f"🔗 <b>Link:</b> {CHANNEL_LINK}"
+            # ✅ Reklama xabari yuboriladi
+            await message.reply(
+                text=(
+                    "🚘 **O‘zbekistondagi eng so‘nggi mashina e’lonlari!**\n"
+                    "📢 Eng arzon va sifatli avtomobillar shu yerda!\n\n"
+                    "👇 Pastdagi tugmani bosib kanalga qo‘shiling va e’tiborni boy bermang!"
+                ),
+                reply_markup=InlineKeyboardMarkup([[
+                    InlineKeyboardButton("📲 Kanalga qo‘shilish (MashinaBozor24uz)", url=CHANNEL_LINK)
+                ]])
             )
             try:
                 await message.reply_photo(photo=CHANNEL_PHOTO_PATH, caption=caption)
