@@ -196,7 +196,7 @@ load_dotenv()
 API_ID = int(os.getenv("API_ID"))
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHANNEL_USERNAME = "@mashina_bozor_moshinalari"
+CHANNEL_USERNAME = "@MashinaBozor24uz"
 CHANNEL_LINK = f"https://t.me/{CHANNEL_USERNAME[1:]}"
 CHANNEL_PHOTO_PATH = "logo.jpg"
 COOKIES_PATH = os.getenv("COOKIES_PATH")
